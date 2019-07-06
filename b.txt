@@ -3,3 +3,4 @@ bug write ---------
 commit -----------
 bug update -------
 work conflict demo  ----
+bug conflict demo ---
