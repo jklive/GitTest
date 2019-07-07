@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" th:href="@{/bootstrap/css/bootstrap.min.css}">
+</head>
+<body>
+  <!-- [[${admins}]]-->
+
+
+   <!--导航条-->
+   <nav class="navbar navbar-inverse">
+       <div class="container-fluid">
+           <!-- Brand and toggle get grouped for better mobile display -->
+           <div class="navbar-header">
+               <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                   <span class="sr-only">Toggle navigation</span>
+                   <span class="icon-bar"></span>
+                   <span class="icon-bar"></span>
+                   <span class="icon-bar"></span>
+               </button>
+               <a class="navbar-brand" href="#">用户管理系统</a>
+           </div>
+
+           <!-- Collect the nav links, forms, and other content for toggling -->
+           <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+               <ul class="nav navbar-nav">
+                   <li class="active"><a href="#">高伟 <span class="sr-only">(current)</span></a></li>
+                   <li><a href="#">管理员</a></li>
+                   <li class="dropdown">
+                       <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">选项 <span class="caret"></span></a>
+                       <ul class="dropdown-menu">
+                           <li><a href="#">Action</a></li>
+                           <li><a href="#">Another action</a></li>
+                           <li><a href="#">Something else here</a></li>
+                           <li role="separator" class="divider"></li>
+                           <li><a href="#">Separated link</a></li>
+                           <li role="separator" class="divider"></li>
+                           <li><a href="#">One more separated link</a></li>
+                       </ul>
+                   </li>
+               </ul>
+               <form class="navbar-form navbar-left" role="search">
+                   <div class="form-group">
+                       <input type="text" class="form-control" placeholder="查询">
+                   </div>
+                   <button type="submit" class="btn btn-default">提交</button>
+               </form>
+               <ul class="nav navbar-nav navbar-right">
+                   <li><a href="#">设置</a></li>
+                   <li class="dropdown">
+                       <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">退出系统 <span class="caret"></span></a>
+                       <ul class="dropdown-menu">
+                           <li><a href="#">Action</a></li>
+                           <li><a href="#">Another action</a></li>
+                           <li><a href="#">Something else here</a></li>
+                           <li role="separator" class="divider"></li>
+                           <li><a href="#">Separated link</a></li>
+                       </ul>
+                   </li>
+               </ul>
+           </div><!-- /.navbar-collapse -->
+       </div><!-- /.container-fluid -->
+   </nav>
+
+  <div class="container">
+
+      <div class="row">
+          <div class="col-xs-2">
+
+          </div>
+          <div class="col-xs-8">
+              <table class="table table-bordered table-hover table-striped" id="admintable">
+                  <thead>
+                      <tr>
+                          <th>id</th>
+                          <th>账号</th>
+                          <th>用户名</th>
+                          <th>email</th>
+                          <th>日期</th>
+                          <th>操作</th>
+                      </tr>
+                  </thead>
+                  <tbody id="tbodyadmin">
+                      <tr th:each="admin:${admins}">
+                          <td th:text="${admin.id}">1</td>
+                          <td th:text="${admin.loginacct}">2</td>
+                          <td th:text="${admin.username}">3</td>
+                          <td th:text="${admin.email}">4</td>
+                          <td th:text="${#dates.format(#dates.createNow(), 'yyyy年MM月dd日  hh:mm:ss')}">5</td>
+                          <td>
+                              <button class="btn btn-default openInputAddModelBtn">新增</button>
+                              <button class="btn btn-default openInputDeleteModelBtn" th:attr="tid=${admin.id},url=@{/user/delete},pn=${pageInfo.pageNum}">删除</button>
+                              <button class="btn btn-default openInputUpdateModelBtn" th:attr="selecturl=@{/user/select},tid=${admin.id}">修改</button>
+                          </td>
+                     </tr>
+
+                  </tbody>
+
+
+
+              </table>
+
+          </div>
+          <div class="col-xs-2"></div>
+
+      </div>
+
+  </div>
+
+  <!--展示分页条-->
+
+  <div align="center">
+
+      <ul class="pagination">
+          <li>
+              <a th:href="@{/list(pn=1)}" >
+                  <span aria-hidden="true">首页</span>
+              </a>
+          </li>
+          <li>
+              <a th:href="@{/list(pn=${pageInfo.prePage})}" aria-label="Previous">
+                  <span aria-hidden="true">上一页、</span>
+              </a>
+          </li>
+
+          <li th:each="num:${pageInfo.navigatepageNums}" th:class="${num}==${pageInfo.pageNum}?'active':''">
+              <a th:text="${num}" th:href="@{/list(pn=${num})}">1</a></li>
+
+          <li>
+              <a th:href="@{/list(pn=${pageInfo.nextPage})}" aria-label="Next">
+                  <span aria-hidden="true">下一页</span>
+              </a>
+          </li>
+          <li>
+              <a th:href="@{/list(pn=${pageInfo.pages})}" >
+                  <span aria-hidden="true">尾页</span>
+              </a>
+          </li>
+      </ul>
+
+  </div>
+
+  <!-- 展示分页信息-->
+  <div align="center">
+      <h3 align="center">当前第[[${pageInfo.pageNum }]]页,共[[${pageInfo.pages }]]页,共[[${pageInfo.total }]]条记录
+      </h3>
+  </div>
+
+  <!--添加模态框-->
+  <div class="modal fade" id="Inputaddmodal">
+      <div class="modal-dialog">
+          <div class="modal-content">
+              <div class="modal-header">
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                  <h4 class="modal-title">添加用户</h4>
+              </div>
+              <div class="modal-body">
+                  <form action="/user/add" method="post" id="userAddForm">
+
+                      <div class="form-group">
+                          <label>账号</label>
+                          <input type="text" class="form-control" id="Inputloginacct" name="loginacct" placeholder="请输入账号">
+                      </div>
+                      <div class="form-group">
+                          <label>用户名</label>
+                          <input type="text" class="form-control" id="Inputusername" name="username" placeholder="请输入用户名">
+                      </div>
+                      <div class="form-group">
+                          <label>邮箱</label>
+                          <input type="email" class="form-control" id="Inputuseremail" name="email" placeholder="请输入邮箱地址">
+                      </div>
+                  </form>
+
+              </div>
+              <div class="modal-footer">
+                  <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                  <button type="button" class="btn btn-primary" id="saveUserAddBtn">保存</button>
+              </div>
+          </div><!-- /.modal-content -->
+      </div><!-- /.modal-dialog -->
+  </div><!-- /.modal -->
+
+
+  <!--修改模态框-->
+  <div class="modal fade" id="InputUpdatemodal">
+      <div class="modal-dialog">
+          <div class="modal-content">
+              <div class="modal-header">
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                  <h4 class="modal-title">修改用户</h4>
+              </div>
+              <div class="modal-body">
+                  <form action="/user/update" method="post" id="userUpdateForm">
+                      <input class="hidden" name="pn" th:value="${pageInfo.pageNum}">
+                      <input class="hidden" id="idUpdate" name="id">
+                      <div class="form-group">
+                          <label>账号</label>
+                          <input type="text" class="form-control" id="loginacctUpdate" name="loginacct" >
+                      </div>
+                      <div class="form-group">
+                          <label>用户名</label>
+                          <input type="text" class="form-control" id="usernameUpdate" name="username" >
+                      </div>
+                      <div class="form-group">
+                          <label>邮箱</label>
+                          <input type="email" class="form-control" id="emailUpdate"  name="email" >
+                      </div>
+                  </form>
+
+              </div>
+              <div class="modal-footer">
+                  <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                  <button type="button" class="btn btn-primary" id="updateUserAddBtn">修改</button>
+              </div>
+          </div><!-- /.modal-content -->
+      </div><!-- /.modal-dialog -->
+  </div><!-- /.modal -->
+
+   <script th:src="@{/jquery/jquery-2.1.1.min.js}"></script>
+   <script th:src="@{/bootstrap/js/bootstrap.js}"></script>
+   <script th:src="@{/layer/layer.js}"></script>
+
+  <script type="text/javascript">
+
+      //点击新增打开模态框
+      $(".openInputAddModelBtn").click(function(){
+          $("#Inputaddmodal").modal({
+              backdrop:'static',
+              show:true
+          });
+
+          //
+      });
+
+
+      //点击保存，提交表单给服务器保存数据
+      $("#saveUserAddBtn").click(function(){
+          $("#userAddForm").submit()
+
+      });
+
+
+      //给单独的删除按钮绑定单击事件
+      $("#tbodyadmin").on("click",".openInputDeleteModelBtn",function(){
+          var pn = $(this).attr("pn");
+          var id = $(this).attr("tid");
+          var url = $(this).attr("url");
+
+          layer.confirm("请确认是否删除"+id,{icon: 3, title:'提示'},function () {
+              location.href = url+"?id="+id+"&pn=" + pn;
+              layer.alert("删除成功")
+          });
+      });
+
+
+      //修改按钮绑定单击事件
+      $(".openInputUpdateModelBtn").click(function(){
+
+          //查询用户信息
+          var url = $(this).attr("selecturl");
+          var id = $(this).attr("tid");
+          $.get(url,{"id":id},function (data) {
+              $("#loginacctUpdate").val(data.loginacct);
+              $("#usernameUpdate").val(data.username);
+              $("#emailUpdate").val(data.email);
+              $("#idUpdate").val(data.id);/*很关键，便于修改提交id进行有选择的更新*/
+
+          });
+
+          //点击修改按钮弹出模态框
+          $("#InputUpdatemodal").modal({
+              backdrop:'static',
+              show:true
+          });
+
+          //给修改模态框中的提交按钮绑定单机事件
+          $("#updateUserAddBtn").click(function(){
+              $("#userUpdateForm").submit();
+          });
+
+      });
+
+
+
+  </script>
+</body>
+</html>
